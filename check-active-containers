@@ -1,0 +1,12 @@
+#!/bin/bash
+containers=$(sudo docker ps | awk '{if(NR>1) print $NF}')
+for container in $containers
+do
+result=`docker port $container | grep -E '^443/tcp|^80/tcp' |  sort -u | wc -l`
+if [ $result -ge 1 ]; then
+docker stop $container
+echo "stoping container with name : $container"
+else
+  echo "container $container  dosn't include 443 or 80 port"
+fi
+done

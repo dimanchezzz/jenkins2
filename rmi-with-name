@@ -1,0 +1,7 @@
+#!/bin/bash
+result=`docker image ls $1 | sort -u | wc -l`
+if [ $result -ge 2 ]; then
+docker rmi $1
+else
+echo "$1 container not found"
+fi

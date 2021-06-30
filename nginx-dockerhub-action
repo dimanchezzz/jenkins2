@@ -1,0 +1,31 @@
+#!/bin/bash
+start="start"
+stop="stop"
+if [ -z "$1" ]
+then
+	echo "no parameter, type (start/stop) in parameter"
+        exit 1
+elif [ $1 == $start ]
+then
+if [ -z "$2" ]
+then
+echo "no parameter imagename, type (imagename) in parameter"
+exit 1
+fi
+	echo "redirect ports enabled .."
+	sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+	sudo iptables -t nat -I PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 8443
+	echo "starting container.."
+	sudo docker run -it --rm -d -p 8080:80 -p 8443:443 --name nginxfromjenkins $2
+elif [ $1 == $stop ]
+then
+	echo "stoping container.."
+	sudo docker stop nginxfromjenkins
+	echo "redirect ports disabled.."
+	sudo iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+	sudo iptables -t nat -D PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 8443
+else 
+	echo "invalid parameter"
+	exit 1
+fi
+exit
