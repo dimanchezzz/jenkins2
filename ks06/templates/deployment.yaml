@@ -39,7 +39,7 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", 'echo "$( cat /etc/secret-volume/username )" >> /usr/share/nginx/html/index.html']
+                      command: ["/bin/sh", "-c", 'echo "$( cat /etc/secret-volume/username ) BUILD ID: $( cat /etc/secret-volume/id )" >> /usr/share/nginx/html/index.html']
           volumeMounts:
         # name must match the volume name below
             - name: secret-volume
