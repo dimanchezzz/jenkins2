@@ -27,11 +27,19 @@ spec:
       serviceAccountName: {{ include "ks06.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: test-secret  
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          volumeMounts:
+        # name must match the volume name below
+            - name: secret-volume
+              mountPath: /etc/secret-volume
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
